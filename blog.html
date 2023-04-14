@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./styleBlog.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>usuario</h1>
+            <h2 onclick="usuario()"></h2>
+            <a class="sair" href="./index.html">sair</a>
+        </div>
+        <div class="relogio">
+            <div>
+                <span id="horas">00</span>
+                <span class="tempo">:</span>
+
+            </div>
+            <div>
+                <span id="minutos">00</span>
+                <span class="tempo">:</span>
+
+            </div>
+            <div>
+                <span id="segundos">00</span>
+                <span class="tempo"></span>
+
+            </div>
+
+    </header>
+
+    <h1 class="title">Nova Postagem</h1>
+
+    <section class="container-box" id="container">
+        <div id="txt_adc">
+            <input id="txt_titulo" type="text" placeholder="Título do post">
+            <input id="txt_descricao" type="text" placeholder="Descrição do post">
+
+            <button onclick="inserirPost()" class="adc_button">
+                <i class="fa-sharp fa-light fa-plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <ul id="ul_tarefas" class="ul_list">
+
+    </ul>
+    </div>
+</body>
+
+</html>
+<script src="https://kit.fontawesome.com/a12d425833.js" crossorigin="anonymous"></script>
+<script>
+
+
+    ObterPost();
+
+    function ObterPost() {
+        var html = "";
+
+        $.ajax({
+            url: "https://localhost:44365/Post",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    html += '<li class="li_list">' +
+                        '<div id="timer"></div>'+
+                        '<p class="txt_edit" id="' + 'descricao' + response[i].id + '">'+'titulo: ' + response[i].titulo +'</br>'+'</br>'+'descrição ' +'</br>'+  response[i].texto + '</p> ' +'</br>'+                  
+                        '<div>' +
+                        '</div></li>';
+                }
+
+                $("#ul_tarefas").first().after(html);
+            },
+            error: function (request, message, error) {
+                alert("Erro ao Obter tarefas")
+            }
+
+        })
+    }
+
+    function inserirPost() {
+        var titulo = $("#txt_titulo").val();
+        var descricao = $("#txt_descricao").val();
+
+        if (titulo && descricao) {
+            var usuarioId = window.localStorage.getItem('usuarioId');
+
+            var request = {
+                "titulo": titulo,
+                "texto": descricao,
+                "IdUsuario": parseInt(usuarioId)
+            }
+
+            $.ajax({
+                url: "https://localhost:44365/Post",
+                type: "POST",
+                data: JSON.stringify(request),
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (request, message, error) {
+                    alert("Erro ao inserir post")
+                }
+            });
+        } else {
+            alert("Por favor, preencha o título e a descrição antes de salvar.")
+        }
+    }
+
+    function deletar(id) {
+        $("#adc_post").not(':first').remove();
+        var html = "";
+        var request = {
+            "id": $("#adc_post").val(),
+        }
+
+
+        $.ajax({
+            url: "http://localhost:64541/CheckList/" + id,
+            type: "DELETE",
+            data: JSON.stringify(request),
+            contentType: "json",
+            success: function (response) {
+                location.reload();
+            },
+            error: function (request, message, error) {
+                alert("Não conseguimos deletar")
+            }
+        })
+    }
+
+    const horas = document.getElementById('horas');
+    const minutos = document.getElementById('minutos');
+    const segundos = document.getElementById('segundos');
+
+    const relogio = setInterval(function time() {
+        let dateToday = new Date();
+        let hr = dateToday.getHours();
+        let min = dateToday.getMinutes();
+        let s = dateToday.getSeconds();
+
+        s = s < 10 ? "0" + s : s;
+        min = min < 10 ? "0" + min : min;
+
+        horas.textContent = hr;
+        minutos.textContent = min;
+        segundos.textContent = s;
+
+    })
+
+</script>
