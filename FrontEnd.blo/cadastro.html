@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="container-login">
+        <h1>CRIAR CADASTRO </h1>
+        <label for="txt_nome">NOME </label><br>
+        <input type="text" placeholder=" Digite seu usuário" id="txt_nome" />
+
+        <label for="txt_usuario">USUÁRIO </label><br>
+        <input type="text" placeholder=" Digite seu usuário" id="txt_usuario" />
+
+        <label for="txt_senha">SENHA </label><br>
+        <input id="txt_senha"  type="password" placeholder=" Digite a Senha" required>
+
+        <label for="txt_senha">CONFIRMAR SENHA </label><br>
+        <input id="txt_senha1"  type="password" placeholder=" Digite a Senha" required>
+
+        <button id="login" onclick="verificar() + cadastro()" class="btn btn-success">CONFIRMAR</button>
+
+
+
+    </div>
+
+    </div>
+</body>
+
+</html>
+
+<script>
+    function verificar(){
+        var senha = document.getElementById("txt_senha").value;
+        var confSenha = document.getElementById("txt_senha1").value;
+
+        if (senha == confSenha){
+            alert=("Confirmar Cadastro")
+        } 
+        else{
+            alert(" senhas não correspondem")
+        }
+    }
+
+    function cadastro() {
+        var requestCadastro = {
+            "IDusuario": $("#txt_nome").val(),
+            "Usuario": $("#txt_usuario").val(),
+            "Senha": $("#txt_senha").val()
+        }
+
+        $.ajax ({
+            url:"https://localhost:44365/Usuario",
+            type: "POST",
+            data: JSON.stringify(requestCadastro),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(response){
+                window.location.href='./index.html'
+
+                console.log(cadastro);
+            },
+            error:function(request,message,error){
+                alert("erro ao cadastrar")
+            }
+        })
+    }
+</script>
